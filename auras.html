@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AURAS - Driver Alert</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h2>Send Emergency Alert</h2>
+  <button onclick="sendAlert()">🔴 Alert Police</button>
+  <p id="status"></p>
+
+  <script>
+    // ✅ Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function sendAlert() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const alertData = {
+            status: "Emergency",
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            timestamp: new Date().toLocaleString()
+          };
+
+          db.ref("ambulanceAlerts").set(alertData);
+          document.getElementById("status").innerText = "✅ Alert sent successfully!";
+        }, function(error) {
+          document.getElementById("status").innerText = "❌ Location error: " + error.message;
+        });
+      } else {
+        document.getElementById("status").innerText = "❌ Geolocation not supported.";
+      }
+    }
+  </script>
+</body>
+</html>

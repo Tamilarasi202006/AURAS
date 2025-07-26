@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AURAS - Police Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h2>👮 AURAS - Live Ambulance Alerts</h2>
+  <div id="alertInfo">Waiting for alert...</div>
+
+  <script>
+ const firebaseConfig = {
+      apiKey: "AIzaSyB3a4usW29OnkfTYWjW3enBk3jCxjNXmzQ",
+      authDomain: "auras-e2c75.firebaseapp.com",
+      databaseURL: "https://auras-e2c75-default-rtdb.firebaseio.com",
+      projectId: "auras-e2c75",
+      storageBucket: "auras-e2c75.appspot.com",
+      messagingSenderId: "159178033998",
+      appId: "1:159178033998:web:7a24ba69d8bb8658cc6c1f",
+      measurementId: "G-7EVB4RHS2N"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const alertDiv = document.getElementById("alertInfo");
+
+    db.ref("ambulanceAlerts").on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        alertDiv.innerHTML = `
+          <strong>🚑 Emergency Alert!</strong><br>
+          🕒 Time: ${data.timestamp}<br>
+          📍 Location: ${data.latitude}, ${data.longitude}<br>
+          Status: ${data.status}
+        `;
+      } else {
+        alertDiv.innerHTML = "No active alerts.";
+      }
+    });
+  </script>
+</body>
+</html>
